@@ -121,6 +121,8 @@ class MyStatefulComponent extends React.Component {
 
 events in react are similar to events in HTML except that they are camelcased
 
+- for a better experience, controll the input with the value you are setting
+
 ```js
 class MyStatefulComponent extends React.Component {
   constructor(props) {
@@ -137,7 +139,8 @@ class MyStatefulComponent extends React.Component {
     const myCoppiedList = this.state.myList.slice();
     myCoppiedList.push(this.state.name);
     this.setState({
-      myList: myCoppiedList
+      myList: myCoppiedList,
+      name: ""
     });
   }
 
