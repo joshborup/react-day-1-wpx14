@@ -77,7 +77,15 @@ class MyStatefulComponent extends React.Component {
 
 ## updating state and re-renders
 
-React is opinionated and would like to manage how state should update and when rerenders should happen. React gives us a method for updating our state in a stateful class component
+React is opinionated and would like to manage how state should update and when rerenders should happen. React gives us a method for updating our state in a stateful class component `this.setState()`
+
+**to remember**
+
+- we have access to setState because we extend React.Component
+- never directly update arrays and objects, first make a copy and then let `this.setState()` update yout components state
+- `this.setState()` needs an object passed to it
+  - this means either an object literal, or a function that returns an object literal
+- `this.setState()` is an asyncrounous function, so no matter where you put it in your logic, it will run last
 
 ```js
 class MyStatefulComponent extends React.Component {
@@ -102,6 +110,49 @@ class MyStatefulComponent extends React.Component {
     return (
       <div>
         <button onClick={addName}>Add Name</button>
+        <div>{myMappedList}</div>
+      </div>
+    );
+  }
+}
+```
+
+## Events in react
+
+events in react are similar to events in HTML except that they are camelcased
+
+```js
+class MyStatefulComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      myList: ["john", "jacob", "jingle", "heimer", "schmidt"],
+      name: ""
+    };
+    this.addName = this.addName.bind(this);
+    this.changeHandler = this.changeHandler.bind(this);
+  }
+
+  addName() {
+    const myCoppiedList = this.state.myList.slice();
+    myCoppiedList.push(this.state.name);
+    this.setState({
+      myList: myCoppiedList
+    });
+  }
+
+  changeHandler(event) {
+    this.setState({
+      name: event.target.value
+    });
+  }
+
+  render() {
+    const myMappedList = this.state.myList.map(name => <div>{name}</div>);
+    return (
+      <div>
+        <input onChange={this.changeHandler} value={this.state.name} />
+        <button onClick={this.addName}>Add Name</button>
         <div>{myMappedList}</div>
       </div>
     );
