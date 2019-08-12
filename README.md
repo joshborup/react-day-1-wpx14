@@ -1,68 +1,110 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React Day 1
 
-## Available Scripts
+- Student can create an app with create react app
+- Student can render html on the screen
+- Student understands JSX ( {}, className)
+- Student can initialize state in a constructor function
+- Student can render state on the screen
+- Student can use event handlers and e.target.value
 
-In the project directory, you can run:
+## Declarative
 
-### `npm start`
+React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Nothing will happen unless we specificaly declare it to
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```diff
+- Wrong => this will not do anything
+```
 
-### `npm test`
+```js
+function MyButton() {
+  return <button>Press To Alert</button>;
+}
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<MyButton onClick={() => alert("youve been alerted")} />;
+```
 
-### `npm run build`
+```diff
++ Right => React know how to handle events on JSX
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```js
+function MyButton() {
+  return (
+    <button onClick={() => alert("youve been alerted")}>Press To Alert</button>
+  );
+}
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+<MyButton />;
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Component-Based
 
-### `npm run eject`
+Build encapsulated components that manage their own state, then compose them to make complex UIs.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## dynamic updating of just what changed
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+we can hardcode data in react like this, but we can then never update or change that data, it will not remember previous user interactions and therefore can be considered stateless
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```js
+function MyComponent() {
+  const myList = ["john", "jacob", "jingle", "heimer", "schmidt"];
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  const myMappedList = myList.map(name => <div>{name}</div>);
+  return <div>{myMappedList}</div>;
+}
+```
 
-## Learn More
+## What is state and what makes something stateful?
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- a program is described as stateful if it is designed to remember preceding events or user interactions;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```js
+class MyStatefulComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      myList: ["john", "jacob", "jingle", "heimer", "schmidt"]
+    };
+  }
+  render() {
+    const myMappedList = this.state.myList.map(name => <div>{name}</div>);
+    return <div>{myMappedList}</div>;
+  }
+}
+```
 
-### Code Splitting
+## updating state and re-renders
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+React is opinionated and would like to manage how state should update and when rerenders should happen. React gives us a method for updating our state in a stateful class component
 
-### Analyzing the Bundle Size
+```js
+class MyStatefulComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      myList: ["john", "jacob", "jingle", "heimer", "schmidt"]
+    };
+    this.addName = this.addName.bind(this);
+  }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+  addName() {
+    const myCoppiedList = this.state.myList.slice();
+    myCoppiedList.push("His name is my name too!");
+    this.setState({
+      myList: myCoppiedList
+    });
+  }
 
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+  render() {
+    const myMappedList = this.state.myList.map(name => <div>{name}</div>);
+    return (
+      <div>
+        <button onClick={addName}>Add Name</button>
+        <div>{myMappedList}</div>
+      </div>
+    );
+  }
+}
+```
